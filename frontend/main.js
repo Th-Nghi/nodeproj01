@@ -41,16 +41,32 @@ function updateClock() {
 }
 
 function fetchBackendMessage() {
-  const result = document.getElementById('backendResult');
-  result.textContent = 'Calling backend...';
+  // const result = document.getElementById('backendResult');
+  // result.textContent = 'Calling backend...';
 
-  fetch('/api/hello')
+  // fetch('/api/hello')
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     result.textContent = JSON.stringify(data, null, 2);
+  //   })
+  //   .catch((error) => {
+  //     result.textContent = `Error: ${error}`;
+  //   });
+
+  const result = document.getElementById('backendResult');
+ fetch('/api/run-hello-script', {
+  method: 'GET',
+  cache: 'no-store'
+  })
     .then((response) => response.json())
     .then((data) => {
-      result.textContent = JSON.stringify(data, null, 2);
+      // result.textContent = JSON.stringify(data, null, 2);
+      // result.textContent = data.stdout;
+      const firstLine = data.stdout.split('\n')[0] || '';
+      result.textContent = data.stdout
     })
     .catch((error) => {
-      result.textContent = `Error: ${error}`;
+      result.textContent = 'Request failed run-hello-script: ' + error.message;
     });
 }
 

@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request
 import os
+import sys
+import subprocess
 from pytds import connect
 
 app = Flask(__name__)
@@ -9,6 +11,26 @@ def hello():
     return jsonify({
         'message': 'Hello from the backend',
         'status': 'ok'
+    })
+
+@app.route('/api/run-hello-script')
+def run_hello_script():
+    script_path = os.path.join(os.path.dirname(__file__), 'hello.py')
+    result = subprocess.run(
+        [sys.executable, script_path],
+        capture_output=True,
+        text=True
+    )
+    app.logger.info(
+        'run-hello-script result: returncode=%s stdout=%r stderr=%r',
+        result.returncode,
+        result.stdout.strip(),
+        result.stderr.strip()
+    )
+    return jsonify({
+        'stdout': result.stdout.strip(),
+        'stderr': result.stderr.strip(),
+        'returncode': result.returncode
     })
 
 @app.route('/api/weather')
