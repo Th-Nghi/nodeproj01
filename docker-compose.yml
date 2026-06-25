@@ -1,0 +1,49 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - .:/workspace:cached
+    working_dir: /workspace/frontend
+    expose:
+      - "3000"
+    command: bash -lc "npm install && npm run dev -- --host 0.0.0.0 --port 3000"
+    depends_on:
+      - backend
+
+  backend:
+    image: python:3.12-slim
+    volumes:
+      - .:/workspace:cached
+    env_file:
+      - .devcontainer/.env
+    working_dir: /workspace/backend
+    expose:
+      - "5000"
+    command: bash -lc "pip install -r requirements.txt && python app.py"
+    depends_on:
+      - mssql
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    env_file:
+      - .devcontainer/.env
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./mssql-data:/var/opt/mssql
+
+  nginx:
+    image: nginx:stable-alpine
+    depends_on:
+      - frontend
+      - backend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./.devcontainer/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+

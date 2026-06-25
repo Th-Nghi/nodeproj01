@@ -1,0 +1,50 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {
+      "name": "Run Frontend (Vite)",
+      "type": "pwa-node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend",
+      "command": "npm",
+      "args": ["run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Attach Browser to Frontend",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/frontend"
+    },
+    {
+      "name": "Run Backend (Flask)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/app.py",
+      "cwd": "${workspaceFolder}/backend",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "FLASK_ENV": "development"
+      }
+    }
+  ]
+}
